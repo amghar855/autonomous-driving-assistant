@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | VisionGuard{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Upload Video</h2>
+        <p class="text-muted small mb-4">
+          Supported formats: {{ ', '.join(ALLOWED_VIDEO_EXTENSIONS) if ALLOWED_VIDEO_EXTENSIONS else 'MP4, AVI, MOV, MKV' }}.
+        </p>
+        <form id="videoUploadForm" data-overlay="processing" method="post" enctype="multipart/form-data" action="{{ url_for('upload_video') }}">
+          <div class="mb-3">
+            <label for="videoInput" class="form-label">Choose video</label>
+            <input class="form-control" type="file" id="videoInput" name="video" accept="video/*" required>
+          </div>
+          <div class="ratio ratio-16x9 bg-dark-subtle rounded overflow-hidden mb-3">
+            <video id="videoPreview" class="w-100 h-100" controls muted></video>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Process Video</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6" id="image-form">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <h2 class="h5 mb-3">Upload Image</h2>
+        <p class="text-muted small mb-4">
+          Supported formats: {{ ', '.join(ALLOWED_IMAGE_EXTENSIONS) if ALLOWED_IMAGE_EXTENSIONS else 'JPG, PNG, BMP' }}.
+        </p>
+        <form id="imageUploadForm" data-overlay="processing" method="post" enctype="multipart/form-data" action="{{ url_for('upload_image') }}">
+          <div class="mb-3">
+            <label for="imageInput" class="form-label">Choose image</label>
+            <input class="form-control" type="file" id="imageInput" name="image" accept="image/*" required>
+          </div>
+          <div class="border rounded preview-box mb-3 d-flex align-items-center justify-content-center bg-dark-subtle">
+            <img id="imagePreview" src="#" alt="Preview" class="img-fluid d-none">
+            <span class="text-muted small" id="imagePlaceholder">Image preview appears here.</span>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Process Image</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm mt-4">
+  <div class="card-body d-flex flex-column flex-md-row align-items-center gap-3 justify-content-between">
+    <div>
+      <h2 class="h5 mb-1">Go Live</h2>
+      <p class="text-muted small mb-0">
+        Start a 15-second live capture from your webcam with full detection pipeline.
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-primary" href="{{ url_for('live_camera') }}">Open Live Stream</a>
+      <form method="post" action="{{ url_for('start_live_capture') }}" data-overlay="processing">
+        <button type="submit" class="btn btn-primary">Record &amp; Save</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videoInput = document.getElementById('videoInput');
+    const videoPreview = document.getElementById('videoPreview');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const imagePlaceholder = document.getElementById('imagePlaceholder');
+
+    videoInput?.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) {
+        videoPreview.src = '';
+        videoPreview.classList.add('d-none');
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      videoPreview.src = url;
+      videoPreview.load();
+      videoPreview.classList.remove('d-none');
+    });
+
+    imageInput?.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) {
+        imagePreview.src = '#';
+        imagePreview.classList.add('d-none');
+        imagePlaceholder.classList.remove('d-none');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreview.classList.remove('d-none');
+        imagePlaceholder.classList.add('d-none');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+</script>
+{% endblock %}
+
+

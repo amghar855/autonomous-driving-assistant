@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Home | VisionGuard{% endblock %}
+{% block content %}
+<section class="text-center py-5">
+  <h1 class="display-5 fw-bold mb-3">VisionGuard Traffic Intelligence</h1>
+  <p class="lead text-secondary mb-4">
+    Detect vehicles, identify traffic signs, and highlight road lanes in real time.
+  </p>
+  {% if not current_user.is_authenticated %}
+    <div class="d-flex justify-content-center gap-3">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Get Started</a>
+      <a class="btn btn-outline-primary btn-lg" href="{{ url_for('login') }}">Login</a>
+    </div>
+  {% else %}
+    <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}">Go to Dashboard</a>
+  {% endif %}
+</section>
+
+<section class="row g-4 mt-4">
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Comprehensive Detection</h5>
+        <p class="card-text">
+          Combine YOLOv8 car and traffic sign recognition with classic lane tracking for reliable situational awareness.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Flexible Inputs</h5>
+        <p class="card-text">
+          Upload videos, analyze images, or stream your webcam live—all processed directly in the browser session.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Secure & Organized</h5>
+        <p class="card-text">
+          User accounts, saved histories, downloadable outputs, and clean UI with dark mode support.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

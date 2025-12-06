@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Results | VisionGuard{% endblock %}
+{% block content %}
+<h1 class="h4 mb-4">Your Detection History</h1>
+
+{% if results %}
+  <div class="row g-4">
+    {% for result in results %}
+      {% set file_ext = result.output_path.split('.')[-1].lower() %}
+      {% set static_url = url_for('static', filename=result.output_path) %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h2 class="h6 text-uppercase text-primary">{{ result.input_type }}</h2>
+            <p class="text-muted small mb-2">
+              {{ result.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+            </p>
+            {% if file_ext in ['mp4','avi','mov','mkv'] %}
+              <div class="ratio ratio-16x9 mb-3 bg-dark-subtle rounded overflow-hidden">
+                <video class="w-100 h-100" controls preload="metadata">
+                  <source src="{{ static_url }}" type="video/{{ file_ext }}">
+                </video>
+              </div>
+            {% else %}
+              <div class="preview-box border rounded mb-3 overflow-hidden">
+                <img src="{{ static_url }}" class="img-fluid" alt="Processed output">
+              </div>
+            {% endif %}
+            <ul class="list-unstyled small text-muted mb-4">
+              {% if result.input_filename %}
+                <li><strong>Input:</strong> {{ result.input_filename }}</li>
+              {% endif %}
+              {% if result.average_fps %}
+                <li><strong>Avg FPS:</strong> {{ '%.2f'|format(result.average_fps) }}</li>
+              {% endif %}
+              {% if result.average_inference %}
+                <li><strong>Avg Inference:</strong> {{ '%.2f'|format(result.average_inference * 1000) }} ms</li>
+              {% endif %}
+              {% if result.elapsed_time %}
+                <li><strong>Elapsed:</strong> {{ '%.1f'|format(result.elapsed_time) }} s</li>
+              {% endif %}
+            </ul>
+            <div class="d-flex justify-content-between align-items-center">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('download_file', filename=result.output_path.split('/')[-1]) }}">Download</a>
+              <form method="post" action="{{ url_for('delete_result', result_id=result.id) }}" onsubmit="return confirm('Delete this result?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-center py-5">
+    <p class="text-muted">No detections yet. Run an analysis from the dashboard!</p>
+    <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Go to Dashboard</a>
+  </div>
+{% endif %}
+{% endblock %}
+
+
