@@ -31,8 +31,8 @@ projet_final/
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/visionguard.git
-    cd visionguard
+    git clone https://github.com/amghar855/autonomous-driving-assistant.git
+    cd autonomous-driving-assistant
     ```
 
 2.  **Create and activate a virtual environment:**
