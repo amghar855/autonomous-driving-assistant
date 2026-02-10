@@ -76,5 +76,5 @@ projet_final/
 
 ## 👤 Author
 
-Developed by [Your Name].
-For inquiries, please contact [your.email@example.com].
+Developed by amghar abdennour.
+For inquiries, please contact amgharabdennour7@gmail.com .
